@@ -1,9 +1,9 @@
 {
   "name": "angular-bootstrap-schematic",
-  "version": "0.0.0",
-  "description": "A blank schematics",
+  "version": "0.0.1",
+  "description": "some component's bootstrap schematics",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json --outDir=./dist",
     "test": "npm run build && jasmine src/**/*_spec.js"
   },
   "keywords": [
@@ -15,6 +15,8 @@
   "dependencies": {
     "@angular-devkit/core": "^7.3.9",
     "@angular-devkit/schematics": "^7.3.9",
+    "@angular/cli": "^7.3.9",
+    "@schematics/angular": "^7.3.9",
     "@types/jasmine": "^3.0.0",
     "@types/node": "^8.0.31",
     "jasmine": "^3.0.0",

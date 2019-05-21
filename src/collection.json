@@ -2,8 +2,10 @@
   "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
   "schematics": {
     "form": {
+      "aliases": ["form"],
       "description": "A blank schematic.",
-      "factory": "./form/index#form"
+      "factory": "./form",
+      "schema": "./form/schema.json"
     }
   }
 }
