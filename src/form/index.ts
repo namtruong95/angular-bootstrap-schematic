@@ -19,7 +19,6 @@ import { validateHtmlSelector, validateName } from '@schematics/angular/utility/
 import { applyLintFix } from '@schematics/angular/utility/lint-fix';
 
 import { buildSelector } from '../utils/buildSelector';
-import { addDeclarationToNgModule } from '../utils/addDeclarationToNgModule';
 
 export default function(options: ComponentOptions) {
   return (host: Tree) => {
@@ -40,8 +39,7 @@ export default function(options: ComponentOptions) {
     options.selector = options.selector || buildSelector(options, project.prefix);
 
     // todo remove these when we remove the deprecations
-    options.style =
-      (options.style && options.style !== Style.Css ? options.style : (options.styleext as Style)) || Style.Css;
+    options.style = (options.style && options.style !== Style.Css ? options.style : Style.Scss) || Style.Scss;
     options.skipTests = options.skipTests || !options.spec;
 
     validateName(options.name);
@@ -59,10 +57,6 @@ export default function(options: ComponentOptions) {
       move(parsedPath.path),
     ]);
 
-    return chain([
-      addDeclarationToNgModule(options),
-      mergeWith(templateSource),
-      options.lintFix ? applyLintFix(options.path) : noop(),
-    ]);
+    return chain([mergeWith(templateSource), options.lintFix ? applyLintFix(options.path) : noop()]);
   };
 }

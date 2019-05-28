@@ -8,9 +8,8 @@ describe('<%= classify(name) %>Component', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ <%= classify(name) %>Component ]
-    })
-    .compileComponents();
+      declarations: [<%= classify(name) %>Component]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
