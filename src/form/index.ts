@@ -9,48 +9,31 @@ import {
   filter,
   applyTemplates,
   move,
-  noop
-} from "@angular-devkit/schematics";
-import { strings } from "@angular-devkit/core";
-import {
-  Schema as ComponentOptions,
-  Style
-} from "@schematics/angular/component/schema";
-import {
-  buildRelativePath,
-  findModuleFromOptions
-} from "@schematics/angular/utility/find-module";
+  noop,
+} from '@angular-devkit/schematics';
+import { strings } from '@angular-devkit/core';
+import { Schema as ComponentOptions, Style } from '@schematics/angular/component/schema';
+import { buildRelativePath, findModuleFromOptions } from '@schematics/angular/utility/find-module';
 import {
   addDeclarationToModule,
   addExportToModule,
-  addEntryComponentToModule
-} from "@schematics/angular/utility/ast-utils";
-import { InsertChange } from "@schematics/angular/utility/change";
-import {
-  getProject,
-  buildDefaultPath
-} from "@schematics/angular/utility/project";
-import { parseName } from "@schematics/angular/utility/parse-name";
-import {
-  validateHtmlSelector,
-  validateName
-} from "@schematics/angular/utility/validation";
-import { applyLintFix } from "@schematics/angular/utility/lint-fix";
-import * as ts from "typescript/lib/typescript";
+  addEntryComponentToModule,
+} from '@schematics/angular/utility/ast-utils';
+import { InsertChange } from '@schematics/angular/utility/change';
+import { getProject, buildDefaultPath } from '@schematics/angular/utility/project';
+import { parseName } from '@schematics/angular/utility/parse-name';
+import { validateHtmlSelector, validateName } from '@schematics/angular/utility/validation';
+import { applyLintFix } from '@schematics/angular/utility/lint-fix';
+import * as ts from 'typescript/lib/typescript';
 
 function readIntoSourceFile(host: Tree, modulePath: string): ts.SourceFile {
   const text = host.read(modulePath);
   if (text === null) {
     throw new SchematicsException(`File ${modulePath} does not exist.`);
   }
-  const sourceText = text.toString("utf-8");
+  const sourceText = text.toString('utf-8');
 
-  return ts.createSourceFile(
-    modulePath,
-    sourceText,
-    ts.ScriptTarget.Latest,
-    true
-  );
+  return ts.createSourceFile(modulePath, sourceText, ts.ScriptTarget.Latest, true);
 }
 
 function addDeclarationToNgModule(options: ComponentOptions): Rule {
@@ -64,17 +47,12 @@ function addDeclarationToNgModule(options: ComponentOptions): Rule {
 
     const componentPath =
       `/${options.path}/` +
-      (options.flat ? "" : strings.dasherize(options.name) + "/") +
+      (options.flat ? '' : strings.dasherize(options.name) + '/') +
       strings.dasherize(options.name) +
-      ".component";
+      '.component';
     const relativePath = buildRelativePath(modulePath, componentPath);
     const classifiedName = strings.classify(`${options.name}Component`);
-    const declarationChanges = addDeclarationToModule(
-      source,
-      modulePath,
-      classifiedName,
-      relativePath
-    );
+    const declarationChanges = addDeclarationToModule(source, modulePath, classifiedName, relativePath);
 
     const declarationRecorder = host.beginUpdate(modulePath);
     for (const change of declarationChanges) {
@@ -93,7 +71,7 @@ function addDeclarationToNgModule(options: ComponentOptions): Rule {
         source,
         modulePath,
         strings.classify(`${options.name}Component`),
-        relativePath
+        relativePath,
       );
 
       for (const change of exportChanges) {
@@ -113,7 +91,7 @@ function addDeclarationToNgModule(options: ComponentOptions): Rule {
         source,
         modulePath,
         strings.classify(`${options.name}Component`),
-        relativePath
+        relativePath,
       );
 
       for (const change of entryComponentChanges) {
@@ -142,7 +120,7 @@ function buildSelector(options: ComponentOptions, projectPrefix: string) {
 export default function(options: ComponentOptions) {
   return (host: Tree) => {
     if (!options.project) {
-      throw new SchematicsException("Option (project) is required.");
+      throw new SchematicsException('Option (project) is required.');
     }
     const project = getProject(host, options.project);
 
@@ -155,41 +133,32 @@ export default function(options: ComponentOptions) {
     const parsedPath = parseName(options.path, options.name);
     options.name = parsedPath.name;
     options.path = parsedPath.path;
-    options.selector =
-      options.selector || buildSelector(options, project.prefix);
+    options.selector = options.selector || buildSelector(options, project.prefix);
 
     // todo remove these when we remove the deprecations
     options.style =
-      (options.style && options.style !== Style.Css
-        ? options.style
-        : (options.styleext as Style)) || Style.Css;
+      (options.style && options.style !== Style.Css ? options.style : (options.styleext as Style)) || Style.Css;
     options.skipTests = options.skipTests || !options.spec;
 
     validateName(options.name);
     validateHtmlSelector(options.selector);
 
-    const templateSource = apply(url("./files"), [
-      options.skipTests
-        ? filter(path => !path.endsWith(".spec.ts.template"))
-        : noop(),
-      options.inlineStyle
-        ? filter(path => !path.endsWith(".__style__.template"))
-        : noop(),
-      options.inlineTemplate
-        ? filter(path => !path.endsWith(".html.template"))
-        : noop(),
+    const templateSource = apply(url('./files'), [
+      options.skipTests ? filter((path) => !path.endsWith('.spec.ts.template')) : noop(),
+      options.inlineStyle ? filter((path) => !path.endsWith('.__style__.template')) : noop(),
+      options.inlineTemplate ? filter((path) => !path.endsWith('.html.template')) : noop(),
       applyTemplates({
         ...strings,
-        "if-flat": (s: string) => (options.flat ? "" : s),
-        ...options
+        'if-flat': (s: string) => (options.flat ? '' : s),
+        ...options,
       }),
-      move(parsedPath.path)
+      move(parsedPath.path),
     ]);
 
     return chain([
       addDeclarationToNgModule(options),
       mergeWith(templateSource),
-      options.lintFix ? applyLintFix(options.path) : noop()
+      options.lintFix ? applyLintFix(options.path) : noop(),
     ]);
   };
 }

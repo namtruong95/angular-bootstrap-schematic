@@ -79,13 +79,7 @@
       "description": "The file extension or preprocessor to use for style files.",
       "type": "string",
       "default": "css",
-      "enum": [
-        "css",
-        "scss",
-        "sass",
-        "less",
-        "styl"
-      ],
+      "enum": ["css", "scss", "sass", "less", "styl"],
       "x-user-analytics": 5
     },
     "spec": {
@@ -116,7 +110,7 @@
       "format": "html-selector",
       "description": "The HTML selector to use for this component."
     },
-    "module":  {
+    "module": {
       "type": "string",
       "description": "The declaring NgModule.",
       "alias": "m"
@@ -139,7 +133,5 @@
       "x-user-analytics": 15
     }
   },
-  "required": [
-    "name"
-  ]
+  "required": ["name"]
 }

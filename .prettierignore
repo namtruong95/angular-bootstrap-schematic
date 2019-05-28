@@ -1,0 +1,6 @@
+package.json
+package-lock.json
+.vscode/*
+*.d.ts
+*.js
+*.map
